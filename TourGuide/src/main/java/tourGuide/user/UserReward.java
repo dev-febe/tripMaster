@@ -2,7 +2,9 @@ package tourGuide.user;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
+import lombok.Data;
 
+@Data
 public class UserReward {
 
 	public final VisitedLocation visitedLocation;
@@ -18,13 +20,4 @@ public class UserReward {
 		this.visitedLocation = visitedLocation;
 		this.attraction = attraction;
 	}
-
-	public void setRewardPoints(int rewardPoints) {
-		this.rewardPoints = rewardPoints;
-	}
-	
-	public int getRewardPoints() {
-		return rewardPoints;
-	}
-	
 }
