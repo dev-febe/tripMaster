@@ -94,11 +94,6 @@ public class TestPerformance {
 
         CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[allUsers.size()]));
         combinedFuture.get();
-		/*
-        for (User user : allUsers) {
-            assertTrue(user.getUserRewards().size() > 0);
-        }
-        */
         stopWatch.stop();
         tourGuideService.tracker.stopTracking();
 
