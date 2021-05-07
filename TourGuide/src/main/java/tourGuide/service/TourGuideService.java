@@ -2,13 +2,7 @@ package tourGuide.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
@@ -26,6 +20,7 @@ import gpsUtil.location.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -97,6 +92,19 @@ public class TourGuideService {
      */
     public User getUser(String userName) {
         return internalUserMap.get(userName);
+    }
+
+
+    public Object getUserPreferences(Optional<String> userName) {
+        if(userName.isPresent())  return internalUserMap.get(userName.get()).getUserPreferences();
+        else return internalUserMap;
+    }
+
+    public UserPreferences addUserPreferences(String userName, UserPreferences userPreferences) {
+        System.out.println(internalUserMap);
+        internalUserMap.get(userName).setUserPreferences(userPreferences);
+
+        return userPreferences;
     }
 
     /**
