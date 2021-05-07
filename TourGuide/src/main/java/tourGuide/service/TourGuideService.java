@@ -96,7 +96,7 @@ public class TourGuideService {
 
 
     public Object getUserPreferences(Optional<String> userName) {
-        if(userName.isPresent())  return internalUserMap.get(userName.get()).getUserPreferences();
+        if (userName.isPresent()) return internalUserMap.get(userName.get()).getUserPreferences();
         else return internalUserMap;
     }
 
@@ -173,15 +173,39 @@ public class TourGuideService {
      * @param visitedLocation
      * @return
      */
-    public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-        List<Attraction> nearbyAttractions = new ArrayList<>();
+    public List<Map<String, Object>> getNearByAttractions(VisitedLocation visitedLocation, User user) {
+        List<Map<String, Object>> nearbyAttractions = new ArrayList<>();
+        int nbAttractions = 0;
         for (Attraction attraction : gpsUtil.getAttractions()) {
-            if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-                nearbyAttractions.add(attraction);
+            nbAttractions++;
+            Map<String, Object> nearAttraction = new HashMap<>();
+            Location attractionLocation = new Location(attraction.latitude, attraction.longitude);
+            nearAttraction.put("attractionName", attraction.attractionName);
+            nearAttraction.put("userLocation", visitedLocation.location);
+            nearAttraction.put("attractionLocation", attractionLocation);
+            nearAttraction.put("attractionDistance", rewardsService.getDistance(visitedLocation.location, attractionLocation));
+            nearAttraction.put("attractionRewardPoints", rewardsService.getRewardPoints(attraction, user));
+            nearbyAttractions.add(nearAttraction);
+            if (nbAttractions == 5) {
+                break;
             }
         }
 
         return nearbyAttractions;
+    }
+
+    /**
+     * Get all current user locations
+     *
+     * @return
+     */
+    public Map<UUID, Location> getAllCurrentLocations() {
+        Map<UUID, Location> locations = new HashMap<>();
+        for (User user : getAllUsers()) {
+            Location location = user.getLastVisitedLocation() != null ? user.getLastVisitedLocation().location : null;
+            locations.put(user.getUserId(), location);
+        }
+        return locations;
     }
 
     private void addShutDownHook() {

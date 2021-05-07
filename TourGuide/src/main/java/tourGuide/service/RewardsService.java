@@ -90,7 +90,7 @@ public class RewardsService {
 	 * @param user
 	 * @return
 	 */
-	private int getRewardPoints(Attraction attraction, User user) {
+	public int getRewardPoints(Attraction attraction, User user) {
 		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 
