@@ -1,18 +1,22 @@
 package tourGuide.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
+import gpsUtil.location.Attraction;
+import gpsUtil.location.Location;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
+
+import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
 @RestController
@@ -30,17 +34,43 @@ public class TourGuideController {
     }
 
     /**
+     * Endpoint: /userPreferences?userName={userName}
+     * Desc: Add user preferences to user
+     *
+     * @param userName
+     * @param userPreferences
+     * @return
+     */
+    @PostMapping("/addUserPreferences")
+    public UserPreferences addUserPreferences(@RequestParam String userName, @RequestBody UserPreferences userPreferences) {
+        return tourGuideService.addUserPreferences(userName, userPreferences);
+    }
+
+    /**
+     * Endpoint:  /userPreferences?userName={userName}
+     * Desc: Get specific user preferences from a user
+     *
+     * @param userName
+     * @return
+     */
+    @GetMapping("/getUserPreferences")
+    public Object getUserPreferences(@RequestParam Optional<String> userName) {
+        return tourGuideService.getUserPreferences(userName);
+    }
+
+    /**
      * Endpoint: /getLocation?userName={userName}
      * Desc: Get Location of specified user
+     *
      * @param userName
      * @return
      * @throws ExecutionException
      * @throws InterruptedException
      */
     @RequestMapping("/getLocation")
-    public String getLocation(@RequestParam String userName) throws ExecutionException, InterruptedException {
+    public Location getLocation(@RequestParam String userName) throws ExecutionException, InterruptedException {
         VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-        return JsonStream.serialize(visitedLocation.location);
+        return visitedLocation.location;
     }
 
     //  TODO: Change this method to no longer return a List of Attractions.
@@ -53,14 +83,14 @@ public class TourGuideController {
     //  The reward points for visiting each Attraction.
     //  Note: Attraction reward points can be gathered from RewardsCentral
     @RequestMapping("/getNearbyAttractions")
-    public String getNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
+    public List<Attraction> getNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
         VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-        return JsonStream.serialize(tourGuideService.getNearByAttractions(visitedLocation));
+        return tourGuideService.getNearByAttractions(visitedLocation);
     }
 
     @RequestMapping("/getRewards")
-    public String getRewards(@RequestParam String userName) {
-        return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
+    public List<UserReward> getRewards(@RequestParam String userName) {
+        return tourGuideService.getUserRewards(getUser(userName));
     }
 
     @RequestMapping("/getAllCurrentLocations")
@@ -79,9 +109,8 @@ public class TourGuideController {
     }
 
     @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
-        List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
-        return JsonStream.serialize(providers);
+    public List<Provider> getTripDeals(@RequestParam String userName) {
+        return  tourGuideService.getTripDeals(getUser(userName));
     }
 
     private User getUser(String userName) {
