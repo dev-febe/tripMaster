@@ -17,7 +17,7 @@ apply plugin: "jacoco"
 
 bootJar {
     baseName = 'tourGuide'
-    version =  '1.0.0'
+    version = '1.0.0'
 }
 
 repositories {
@@ -34,19 +34,29 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile group: 'org.javamoney', name: 'moneta', version: '1.3'
-	compile group: 'com.jsoniter', name: 'jsoniter', version: '0.9.23'
+    compile group: 'com.jsoniter', name: 'jsoniter', version: '0.9.23'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.1.0.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.1.0.RELEASE'
+
     compileOnly 'org.projectlombok:lombok:1.18.20'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
-	
-    compile(name:'gpsUtil', ext:'jar')
-    compile(name:'RewardCentral', ext:'jar')
-    compile(name:'TripPricer', ext:'jar')
-    
+
+    compile(name: 'GpsUtil', ext: 'jar')
+    compile(name: 'RewardCentral', ext: 'jar')
+    compile(name: 'TripPricer', ext: 'jar')
+
     testCompile("junit:junit")
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
+    testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '2.19.0'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.19.0'
+
 }
 
 
@@ -66,13 +76,13 @@ test.finalizedBy jacocoTestReport
 check.dependsOn jacocoTestCoverageVerification
 
 jacocoTestCoverageVerification {
-  violationRules {
-    rule {
-      limit {
-        counter = 'LINE'
-        value = 'COVEREDRATIO'
-        minimum = 0.5
-      }
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.5
+            }
+        }
     }
-  }
 }

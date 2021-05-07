@@ -1,14 +1,9 @@
-package tourGuide.user;
+package tourGuide.model;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jsoniter.annotation.JsonMissingProperties;
-import com.jsoniter.annotation.JsonWrapper;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

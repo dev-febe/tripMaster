@@ -1,0 +1,14 @@
+version: '3'
+services:
+  gps_util:
+    build: ./GpsUtil
+    ports:
+      - 8083:8080
+  reward_central:
+    build: ./RewardsCentral
+    ports:
+      - 8082:8080
+  tour_guide:
+    build: ./TourGuide
+    ports:
+      - 8081:8080

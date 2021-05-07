@@ -6,17 +6,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-import gpsUtil.location.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import gpsUtil.location.VisitedLocation;
-
+import tourGuide.model.*;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
-import tourGuide.user.UserPreferences;
 
-import tourGuide.user.UserReward;
 import tripPricer.Provider;
 
 @RestController
@@ -69,7 +64,8 @@ public class TourGuideController {
      */
     @RequestMapping("/getLocation")
     public Location getLocation(@RequestParam String userName) throws ExecutionException, InterruptedException {
-        VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+        User user = tourGuideService.getUser(userName);
+        VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
         return visitedLocation.location;
     }
 
@@ -85,14 +81,15 @@ public class TourGuideController {
      */
     @RequestMapping("/getNearbyAttractions")
     public List<Map<String, Object>> getNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
-        User user = getUser(userName);
-        VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+        User user = tourGuideService.getUser(userName);
+        VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
         return tourGuideService.getNearByAttractions(visitedLocation, user);
     }
 
     @RequestMapping("/getRewards")
     public List<UserReward> getRewards(@RequestParam String userName) {
-        return tourGuideService.getUserRewards(getUser(userName));
+        User user = tourGuideService.getUser(userName);
+        return tourGuideService.getUserRewards(user);
     }
 
     /**
@@ -109,15 +106,13 @@ public class TourGuideController {
     /**
      * Endpoint: /getTripDeals
      * Desc: Get trip deals
+     *
      * @param userName
      * @return
      */
     @RequestMapping("/getTripDeals")
     public List<Provider> getTripDeals(@RequestParam String userName) {
-        return tourGuideService.getTripDeals(getUser(userName));
-    }
-
-    private User getUser(String userName) {
-        return tourGuideService.getUser(userName);
+        User user = tourGuideService.getUser(userName);
+        return tourGuideService.getTripDeals(user);
     }
 }
