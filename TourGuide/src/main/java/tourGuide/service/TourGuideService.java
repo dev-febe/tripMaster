@@ -13,15 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.client.GpsUtilClient;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.model.*;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserPreferences;
-import tourGuide.user.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -29,21 +24,19 @@ import tripPricer.TripPricer;
 public class TourGuideService {
     private final Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 
-    private final GpsUtil gpsUtil;
+    private final GpsUtilClient gpsUtilClient;
     private final RewardsService rewardsService;
-
     public boolean testMode;
-
     private final TripPricer tripPricer = new TripPricer();
     public final Tracker tracker;
 
     @Autowired
     public TourGuideService(
-            GpsUtil gpsUtil,
+            GpsUtilClient gpsUtilClient,
             RewardsService rewardsService,
             @Value("true") boolean testMode
     ) {
-        this.gpsUtil = gpsUtil;
+        this.gpsUtilClient = gpsUtilClient;
         this.rewardsService = rewardsService;
         this.testMode = testMode;
 
@@ -152,18 +145,17 @@ public class TourGuideService {
 
     /**
      * Track user location
-     * This method updates the location and the rewards of the user
+     * This method updates the location and calculate the rewards of the user
      *
      * @param user
      * @return VisitedLocation
      */
     public CompletableFuture<VisitedLocation> trackUserLocation(User user) {
-        return CompletableFuture.supplyAsync(() -> {
-            VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+        return CompletableFuture.supplyAsync(() ->  gpsUtilClient.getUserLocation(user.getUserId())).thenApply((visitedLocation -> {
             user.addToVisitedLocations(visitedLocation);
             rewardsService.calculateRewards(user);
             return visitedLocation;
-        });
+        }));
     }
 
     /**
@@ -176,7 +168,7 @@ public class TourGuideService {
     public List<Map<String, Object>> getNearByAttractions(VisitedLocation visitedLocation, User user) {
         List<Map<String, Object>> nearbyAttractions = new ArrayList<>();
         int nbAttractions = 0;
-        for (Attraction attraction : gpsUtil.getAttractions()) {
+        for (Attraction attraction : gpsUtilClient.getAttractions()) {
             nbAttractions++;
             Map<String, Object> nearAttraction = new HashMap<>();
             Location attractionLocation = new Location(attraction.latitude, attraction.longitude);

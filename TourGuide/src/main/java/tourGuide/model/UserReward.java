@@ -1,7 +1,5 @@
-package tourGuide.user;
+package tourGuide.model;
 
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
 import lombok.Data;
 
 @Data
