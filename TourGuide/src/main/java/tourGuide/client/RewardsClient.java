@@ -6,9 +6,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
-@FeignClient(name = "rewards", url = "localhost:8082")
+@FeignClient(name = "rewards", url = "${client.rewards.url}")
 public interface RewardsClient {
-
+    /**
+     * Endpoint: Get /getRewards
+     * Desc: Get user rewards
+     *
+     * @param attractionId
+     * @param userId
+     * @return
+     */
     @GetMapping("/getRewards")
     int getRewards(@RequestParam UUID attractionId, @RequestParam UUID userId);
 }

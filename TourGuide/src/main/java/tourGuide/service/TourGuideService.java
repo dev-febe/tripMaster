@@ -151,11 +151,12 @@ public class TourGuideService {
      * @return VisitedLocation
      */
     public CompletableFuture<VisitedLocation> trackUserLocation(User user) {
-        return CompletableFuture.supplyAsync(() ->  gpsUtilClient.getUserLocation(user.getUserId())).thenApply((visitedLocation -> {
-            user.addToVisitedLocations(visitedLocation);
-            rewardsService.calculateRewards(user);
-            return visitedLocation;
-        }));
+        return CompletableFuture.supplyAsync(() -> gpsUtilClient.getUserLocation(user.getUserId()))
+                .thenApply((visitedLocation -> {
+                    user.addToVisitedLocations(visitedLocation);
+                    rewardsService.calculateRewards(user);
+                    return visitedLocation;
+                }));
     }
 
     /**

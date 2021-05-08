@@ -9,11 +9,24 @@ import tourGuide.model.VisitedLocation;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "gpsUtil", url = "localhost:8083")
+@FeignClient(name = "gpsUtil", url = "${client.gpsUtil.url}")
 public interface GpsUtilClient {
+    /**
+     * Endpoint: GET /getAttractions
+     * Desc: Get all attractions
+     *
+     * @return
+     */
     @GetMapping("/getAttractions")
     List<Attraction> getAttractions();
 
+    /**
+     * Endpoint: /getUserLocation
+     * Desc: Get locations by specific user
+     *
+     * @param userId Uuid of the user
+     * @return
+     */
     @GetMapping("/getUserLocation")
     VisitedLocation getUserLocation(@RequestParam UUID userId);
 }

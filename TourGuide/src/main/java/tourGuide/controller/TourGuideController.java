@@ -32,7 +32,7 @@ public class TourGuideController {
      * Endpoint: /userPreferences?userName={userName}
      * Desc: Add user preferences to user
      *
-     * @param userName
+     * @param userName username of user
      * @param userPreferences
      * @return
      */
